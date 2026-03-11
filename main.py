@@ -6,8 +6,8 @@ class CubeSat:
     def __init__(self, name):
         self.name = name
         self.altitude = 410.0
-        self.battery = 100
-        self.temperature = 20
+        self.battery = 100.0
+        self.temperature = 20.0
         self.signal_strength = "Strong"
         self.orientation = "Stable"
 
@@ -43,6 +43,12 @@ class CubeSat:
             return "WARNING", warnings
         return "NOMINAL", []
 
+    def display_summary(self):
+        print(
+            f"{self.name:<12} | Battery: {self.battery:5.1f}% | "
+            f"Signal: {self.signal_strength:<8} | Status: {self.get_status()[0]}"
+        )
+
     def display_telemetry(self):
         status, warnings = self.get_status()
 
@@ -66,18 +72,29 @@ class CubeSat:
         print("=" * 45)
 
     def log_telemetry(self, mission_time):
-        with open("telemetry_log.txt", "a") as f:
+        with open("telemetry_log.txt", "a", encoding="utf-8") as f:
             f.write(
-                f"{mission_time} | Altitude: {self.altitude:.2f} km | "
-                f"Battery: {self.battery:.1f}% | Temp: {self.temperature:.1f} C | "
-                f"Signal: {self.signal_strength}\n"
+                f"{mission_time} | {self.name} | "
+                f"Altitude: {self.altitude:.2f} km | "
+                f"Battery: {self.battery:.1f}% | "
+                f"Temp: {self.temperature:.1f} C | "
+                f"Signal: {self.signal_strength} | "
+                f"Orientation: {self.orientation} | "
+                f"Status: {self.get_status()[0]}\n"
             )
 
 
 def main():
-    satellite = CubeSat("NORAH-SAT")
+    satellites = [
+        CubeSat("NORAH-SAT"),
+        CubeSat("KAUST-SAT"),
+        CubeSat("ORBIT-1")
+    ]
 
-    print("Starting CubeSat Telemetry Simulation...\n")
+    print("Starting Multi-Satellite Telemetry Simulation...\n")
+
+    with open("telemetry_log.txt", "w", encoding="utf-8") as f:
+        f.write("=== CUBESAT TELEMETRY LOG ===\n\n")
 
     mission_seconds = 0
 
@@ -85,9 +102,14 @@ def main():
         mission_seconds += 5
         minutes = mission_seconds // 60
         seconds = mission_seconds % 60
+        mission_time = f"{minutes:02d}:{seconds:02d}"
 
-        print(f"\nMISSION TIME: {minutes:02d}:{seconds:02d}")
+        print(f"\nMISSION TIME: {mission_time}")
         print(f"TELEMETRY CYCLE #{cycle + 1}")
+
+        print("\n=== ACTIVE SATELLITES ===")
+        for sat in satellites:
+            sat.display_summary()
 
         if cycle in [0, 4, 7]:
             print("\n=== ORBIT PASS DETECTED ===")
@@ -100,11 +122,10 @@ def main():
             print("Signal dropout detected")
             print("Attempting reconnection...")
 
-        satellite.update_telemetry()
-        satellite.display_telemetry()
-
-        mission_time = f"{minutes:02d}:{seconds:02d}"
-        satellite.log_telemetry(mission_time)
+        for sat in satellites:
+            sat.update_telemetry()
+            sat.display_telemetry()
+            sat.log_telemetry(mission_time)
 
         time.sleep(1.5)
 
