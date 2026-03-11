@@ -1,37 +1,21 @@
-# CubeSat Telemetry & Mission Control Simulator
+ System Architecture
 
-A Python-based multi-satellite mission control simulator that models CubeSat telemetry transmission, health monitoring, orbit pass events, and communication warnings.
+This project models a simplified CubeSat telemetry pipeline similar to those used in small satellite missions.
 
-## Features
-- Multi-satellite monitoring
-- Live telemetry updates
-- Mission clock
-- Orbit pass detection
-- Communication warning simulation
-- Telemetry logging to file
+The system is divided into three main components:
 
-## Satellites Simulated
-- NORAH-SAT
-- KAUST-SAT
-- ORBIT-1
+1. Telemetry Generation
+   - The CubeSat simulator produces telemetry parameters such as altitude, battery level, temperature, signal strength, and orientation.
 
-## Telemetry Parameters
-- Altitude
-- Battery level
-- Temperature
-- Signal strength
-- Orientation stability
-- System health status
+2. Telemetry Packet Protocol
+   - Telemetry is formatted into structured packets following a simple satellite-style protocol:
 
-## Example Events
-- Orbit pass detected
-- Ground station link connected
-- Communication signal dropout
-- Warning alerts for abnormal conditions
+SAT:NORAH-SAT TIME:32 PASS:IN_RANGE LINK:OK TEMP:22.5C BAT:84% STATUS:NOMINAL
 
-## Files
-- `main.py` — main simulation program
-- `telemetry_log.txt` — generated telemetry log file
 
-## Purpose
-This project was built to simulate a basic satellite mission control environment and demonstrate system monitoring, telemetry handling, and event-based mission operations in Python.
+3. Mission Control Console
+- Telemetry packets are parsed and visualized in a mission control display that highlights satellite health, communication events, and system alerts.
+
+This architecture mirrors the basic workflow of a real satellite ground station:
+
+Satellite Sensors → Telemetry Packet → Ground Station Parser → Mission Control Interface
