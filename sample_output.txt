@@ -1,23 +1,38 @@
-=== ACTIVE SATELLITES ===
-NORAH-SAT    | Battery: 100.0% | Signal: Strong   | Status: NOMINAL
-KAUST-SAT    | Battery: 100.0% | Signal: Strong   | Status: NOMINAL
-ORBIT-1      | Battery: 100.0% | Signal: Strong   | Status: NOMINAL
+MISSION TIME: 00:05
+TELEMETRY CYCLE #1
 
 === ORBIT PASS DETECTED ===
 Ground Station Link : CONNECTED
 Downlink Status     : ACTIVE
-Receiving telemetry...
 
 =============================================
         CUBESAT MISSION CONTROL
 =============================================
 Satellite Name   : NORAH-SAT
-Altitude         : 409.68 km
-Battery          : 98.0%
+Altitude         : 409.57 km
+Battery          : 98.6%
 Temperature      : 21.3 °C
-Signal Strength  : Moderate
+Signal Strength  : Strong
 Orientation      : Stable
 System Status    : NOMINAL
 
 Alerts: None
 =============================================
+
+RAW PACKET #1
+SAT:NORAH-SAT TIME:111 PASS:IN_RANGE LINK:OK TEMP:23.0C BAT:46% STATUS:NOMINAL
+
+=======================================================
+              CUBESAT MISSION CONTROL
+=======================================================
+Satellite Name   : NORAH-SAT
+Mission Time     : 111 s
+Orbit Pass       : IN_RANGE
+Link Status      : OK
+Temperature      : 23.0C
+Battery          : 46%
+System Status    : NOMINAL
+
+Alerts:
+- None
+=======================================================
