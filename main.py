@@ -5,28 +5,24 @@ import time
 class CubeSat:
     def __init__(self, name):
         self.name = name
-        self.altitude = 410.0  # km
-        self.battery = 100     # percent
-        self.temperature = 20  # Celsius
+        self.altitude = 410.0
+        self.battery = 100
+        self.temperature = 20
         self.signal_strength = "Strong"
         self.orientation = "Stable"
 
     def update_telemetry(self):
-        # Simulate changes in telemetry values
         self.altitude += random.uniform(-1.5, 1.5)
         self.battery -= random.uniform(0.5, 2.0)
         self.temperature += random.uniform(-2.0, 2.0)
 
-        # Keep values in realistic bounds
-        self.altitude = max(380, min(450, self.altitude))
-        self.battery = max(0, min(100, self.battery))
-        self.temperature = max(-20, min(50, self.temperature))
+        self.altitude = max(380.0, min(450.0, self.altitude))
+        self.battery = max(0.0, min(100.0, self.battery))
+        self.temperature = max(-20.0, min(50.0, self.temperature))
 
-        # Signal strength based on battery and randomness
         signal_options = ["Weak", "Moderate", "Strong"]
         self.signal_strength = random.choice(signal_options)
 
-        # Orientation occasionally becomes unstable
         self.orientation = "Unstable" if random.random() < 0.15 else "Stable"
 
     def get_status(self):
@@ -71,14 +67,26 @@ class CubeSat:
 
 
 def main():
+
+
+
     satellite = CubeSat("NORAH-SAT")
 
     print("Starting CubeSat Telemetry Simulation...\n")
 
+    mission_seconds = 0
+
     for cycle in range(10):
-        print(f"Telemetry Cycle #{cycle + 1}")
+        mission_seconds += 5
+        minutes = mission_seconds // 60
+        seconds = mission_seconds % 60
+
+        print(f"\nMISSION TIME: {minutes:02d}:{seconds:02d}")
+        print(f"TELEMETRY CYCLE #{cycle + 1}")
+
         satellite.update_telemetry()
         satellite.display_telemetry()
+
         time.sleep(1.5)
 
     print("\nSimulation complete.")
