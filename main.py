@@ -67,9 +67,6 @@ class CubeSat:
 
 
 def main():
-
-
-
     satellite = CubeSat("NORAH-SAT")
 
     print("Starting CubeSat Telemetry Simulation...\n")
@@ -83,6 +80,17 @@ def main():
 
         print(f"\nMISSION TIME: {minutes:02d}:{seconds:02d}")
         print(f"TELEMETRY CYCLE #{cycle + 1}")
+
+        if cycle in [0, 4, 7]:
+            print("\n=== ORBIT PASS DETECTED ===")
+            print("Ground Station Link : CONNECTED")
+            print("Downlink Status     : ACTIVE")
+            print("Receiving telemetry...")
+
+        if cycle == 6:
+            print("\n⚠ COMMUNICATION WARNING")
+            print("Signal dropout detected")
+            print("Attempting reconnection...")
 
         satellite.update_telemetry()
         satellite.display_telemetry()
