@@ -2,130 +2,95 @@ import random
 import time
 
 
-class CubeSat:
-    def __init__(self, name):
-        self.name = name
-        self.altitude = 410.0
-        self.battery = 100.0
-        self.temperature = 20.0
-        self.signal_strength = "Strong"
-        self.orientation = "Stable"
+def generate_demo_packet():
+    mission_time = random.randint(1, 120)
+    in_range = (mission_time % 13) < 8
 
-    def update_telemetry(self):
-        self.altitude += random.uniform(-1.5, 1.5)
-        self.battery -= random.uniform(0.5, 2.0)
-        self.temperature += random.uniform(-2.0, 2.0)
+    if not in_range:
+        link = "LOST"
+        status = "COMMS_LOSS"
+    elif mission_time % 17 in [6, 7]:
+        link = "DROPOUT"
+        status = "SIGNAL_DROP"
+    else:
+        link = "OK"
+        status = "NOMINAL"
 
-        self.altitude = max(380.0, min(450.0, self.altitude))
-        self.battery = max(0.0, min(100.0, self.battery))
-        self.temperature = max(-20.0, min(50.0, self.temperature))
+    temperature = round(random.uniform(15.0, 25.0), 1)
+    battery = random.randint(10, 100)
 
-        signal_options = ["Weak", "Moderate", "Strong"]
-        self.signal_strength = random.choice(signal_options)
+    if battery < 20 and status == "NOMINAL":
+        status = "LOW_BAT"
 
-        self.orientation = "Unstable" if random.random() < 0.15 else "Stable"
+    pass_state = "IN_RANGE" if in_range else "OUT_OF_RANGE"
 
-    def get_status(self):
-        warnings = []
+    packet = (
+        f"SAT:NORAH-SAT "
+        f"TIME:{mission_time} "
+        f"PASS:{pass_state} "
+        f"LINK:{link} "
+        f"TEMP:{temperature}C "
+        f"BAT:{battery}% "
+        f"STATUS:{status}"
+    )
 
-        if self.battery < 20:
-            warnings.append("Low Battery")
-        if self.temperature > 35:
-            warnings.append("High Temperature")
-        if self.temperature < -5:
-            warnings.append("Low Temperature")
-        if self.signal_strength == "Weak":
-            warnings.append("Weak Signal")
-        if self.orientation == "Unstable":
-            warnings.append("Orientation Issue")
+    return packet
 
-        if warnings:
-            return "WARNING", warnings
-        return "NOMINAL", []
 
-    def display_summary(self):
-        print(
-            f"{self.name:<12} | Battery: {self.battery:5.1f}% | "
-            f"Signal: {self.signal_strength:<8} | Status: {self.get_status()[0]}"
-        )
+def parse_packet(packet):
+    data = {}
 
-    def display_telemetry(self):
-        status, warnings = self.get_status()
+    parts = packet.split()
 
-        print("\n" + "=" * 45)
-        print("        CUBESAT MISSION CONTROL")
-        print("=" * 45)
-        print(f"Satellite Name   : {self.name}")
-        print(f"Altitude         : {self.altitude:.2f} km")
-        print(f"Battery          : {self.battery:.1f}%")
-        print(f"Temperature      : {self.temperature:.1f} °C")
-        print(f"Signal Strength  : {self.signal_strength}")
-        print(f"Orientation      : {self.orientation}")
-        print(f"System Status    : {status}")
+    for part in parts:
+        if ":" in part:
+            key, value = part.split(":", 1)
+            data[key] = value
 
-        if warnings:
-            print("\nAlerts:")
-            for warning in warnings:
-                print(f"- {warning}")
-        else:
-            print("\nAlerts: None")
-        print("=" * 45)
+    return data
 
-    def log_telemetry(self, mission_time):
-        with open("telemetry_log.txt", "a", encoding="utf-8") as f:
-            f.write(
-                f"{mission_time} | {self.name} | "
-                f"Altitude: {self.altitude:.2f} km | "
-                f"Battery: {self.battery:.1f}% | "
-                f"Temp: {self.temperature:.1f} C | "
-                f"Signal: {self.signal_strength} | "
-                f"Orientation: {self.orientation} | "
-                f"Status: {self.get_status()[0]}\n"
-            )
+
+def display_mission_control(data):
+    print("\n" + "=" * 55)
+    print("              CUBESAT MISSION CONTROL")
+    print("=" * 55)
+    print(f"Satellite Name   : {data.get('SAT', 'UNKNOWN')}")
+    print(f"Mission Time     : {data.get('TIME', 'N/A')} s")
+    print(f"Orbit Pass       : {data.get('PASS', 'N/A')}")
+    print(f"Link Status      : {data.get('LINK', 'N/A')}")
+    print(f"Temperature      : {data.get('TEMP', 'N/A')}")
+    print(f"Battery          : {data.get('BAT', 'N/A')}")
+    print(f"System Status    : {data.get('STATUS', 'N/A')}")
+
+    print("\nAlerts:")
+    status = data.get("STATUS", "N/A")
+    link = data.get("LINK", "N/A")
+
+    if status == "LOW_BAT":
+        print("- Low Battery Warning")
+    elif status == "SIGNAL_DROP":
+        print("- Communication Dropout Detected")
+    elif status == "COMMS_LOSS":
+        print("- Satellite Out of Range / Link Lost")
+    elif link == "DROPOUT":
+        print("- Link Instability Detected")
+    else:
+        print("- None")
+
+    print("=" * 55)
 
 
 def main():
-    satellites = [
-        CubeSat("NORAH-SAT"),
-        CubeSat("KAUST-SAT"),
-        CubeSat("ORBIT-1")
-    ]
-
-    print("Starting Multi-Satellite Telemetry Simulation...\n")
-
-    with open("telemetry_log.txt", "w", encoding="utf-8") as f:
-        f.write("=== CUBESAT TELEMETRY LOG ===\n\n")
-
-    mission_seconds = 0
+    print("Starting CubeSat Packet Parser Simulation...\n")
 
     for cycle in range(10):
-        mission_seconds += 5
-        minutes = mission_seconds // 60
-        seconds = mission_seconds % 60
-        mission_time = f"{minutes:02d}:{seconds:02d}"
+        packet = generate_demo_packet()
 
-        print(f"\nMISSION TIME: {mission_time}")
-        print(f"TELEMETRY CYCLE #{cycle + 1}")
+        print(f"\nRAW PACKET #{cycle + 1}")
+        print(packet)
 
-        print("\n=== ACTIVE SATELLITES ===")
-        for sat in satellites:
-            sat.display_summary()
-
-        if cycle in [0, 4, 7]:
-            print("\n=== ORBIT PASS DETECTED ===")
-            print("Ground Station Link : CONNECTED")
-            print("Downlink Status     : ACTIVE")
-            print("Receiving telemetry...")
-
-        if cycle == 6:
-            print("\n⚠ COMMUNICATION WARNING")
-            print("Signal dropout detected")
-            print("Attempting reconnection...")
-
-        for sat in satellites:
-            sat.update_telemetry()
-            sat.display_telemetry()
-            sat.log_telemetry(mission_time)
+        parsed_data = parse_packet(packet)
+        display_mission_control(parsed_data)
 
         time.sleep(1.5)
 
