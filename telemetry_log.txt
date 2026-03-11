@@ -1,0 +1,10 @@
+00:05 | Altitude: 410.21 km | Battery: 98.8% | Temp: 19.3 C | Signal: Moderate
+00:10 | Altitude: 411.44 km | Battery: 98.3% | Temp: 19.5 C | Signal: Moderate
+00:15 | Altitude: 411.49 km | Battery: 97.6% | Temp: 19.2 C | Signal: Moderate
+00:20 | Altitude: 411.17 km | Battery: 96.9% | Temp: 18.4 C | Signal: Moderate
+00:25 | Altitude: 410.06 km | Battery: 96.0% | Temp: 17.7 C | Signal: Strong
+00:30 | Altitude: 409.90 km | Battery: 95.3% | Temp: 16.3 C | Signal: Moderate
+00:35 | Altitude: 408.65 km | Battery: 93.5% | Temp: 16.1 C | Signal: Strong
+00:40 | Altitude: 409.35 km | Battery: 92.1% | Temp: 15.2 C | Signal: Weak
+00:45 | Altitude: 409.61 km | Battery: 90.4% | Temp: 14.2 C | Signal: Strong
+00:50 | Altitude: 410.32 km | Battery: 89.4% | Temp: 14.4 C | Signal: Strong

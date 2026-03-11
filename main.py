@@ -65,6 +65,14 @@ class CubeSat:
             print("\nAlerts: None")
         print("=" * 45)
 
+    def log_telemetry(self, mission_time):
+        with open("telemetry_log.txt", "a") as f:
+            f.write(
+                f"{mission_time} | Altitude: {self.altitude:.2f} km | "
+                f"Battery: {self.battery:.1f}% | Temp: {self.temperature:.1f} C | "
+                f"Signal: {self.signal_strength}\n"
+            )
+
 
 def main():
     satellite = CubeSat("NORAH-SAT")
@@ -94,6 +102,9 @@ def main():
 
         satellite.update_telemetry()
         satellite.display_telemetry()
+
+        mission_time = f"{minutes:02d}:{seconds:02d}"
+        satellite.log_telemetry(mission_time)
 
         time.sleep(1.5)
 
